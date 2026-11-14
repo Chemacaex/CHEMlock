@@ -398,7 +398,7 @@ function render(){
   $("#fab").setAttribute("aria-label", ui.tab === "deseos" ? "Añadir deseo" : ui.tab === "ventas" ? "Añadir juegos a ventas" : "Añadir juego");
   const v = $("#view");
   if (!ready) v.innerHTML = `<div class="title"><h1>CHEMlock</h1></div><div class="empty">Cargando tus juegos…</div>`;
-  else if (!games.length) v.innerHTML = `<div class="title"><h1>CHEMlock</h1></div><div class="empty">Tu colección está vacía. Pulsa <b>+</b> para añadir tu primer juego${window.chemlock ? ", o importa tus datos desde la copia que te pasé." : "."}</div>${window.chemlock ? `<label class="btn primary block" style="cursor:pointer">Importar mis datos (.json)<input type="file" id="importFile" accept="application/json,.json" hidden></label>` : ""}`;
+  else if (!games.length) v.innerHTML = `<div class="title"><h1>CHEMlock</h1></div><div class="empty">Tu colección está vacía. Pulsa <b>+</b> para añadir tu primer juego${window.chemlock ? ", o importa tus datos desde la copia que te pasé." : "."}</div>${window.chemlock ? `<label class="btn primary block" style="cursor:pointer">Importar mis datos (.json)<input type="file" id="importFile" hidden></label>` : ""}`;
   else if (ui.tab === "inicio") renderInicio(v);
   else if (ui.tab === "juegos") renderJuegos(v);
   else if (ui.tab === "deseos") renderDeseos(v);
@@ -730,7 +730,7 @@ function renderInformes(v){
     ${window.chemlock ? `${sec("Cuenta")}
     <div class="card">
       <div class="s" style="font-size:14px;display:block">Sesión iniciada como <b style="color:var(--ink)">${esc(window.chemlock.email())}</b></div>
-      <label class="btn block" style="cursor:pointer">Importar datos (.json)<input type="file" id="importFile" accept="application/json,.json" hidden></label>
+      <label class="btn block" style="cursor:pointer">Importar datos (.json)<input type="file" id="importFile" hidden></label>
       <button class="btn block" id="logout">Cerrar sesión</button>
     </div>` : ""}`;
 }
@@ -960,7 +960,7 @@ document.addEventListener("change", e => {
   else if (t.id === "coop") { ui.coop = t.checked; render(); }
   else if (t.id === "importFile" && t.files && t.files[0] && window.chemlock) {
     toast("Importando…");
-    window.chemlock.importFile(t.files[0]).then(n => toast(`Importados ${n} juegos`)).catch(err => { console.error(err); toast("No se pudo importar ese archivo"); });
+    window.chemlock.importFile(t.files[0]).then(n => toast(`Importados ${n} juegos`)).catch(err => { console.error(err); toast("No se pudo importar: " + ((err && (err.code || err.message)) || "error desconocido")); }).finally(() => { t.value = ""; });
   }
   else if (t.id === "saleEst") { saveGame(t.dataset.id, { saleEst: parseNum(t.value) }); }
   else if (t.id === "wk") { const n = parseNum(t.value); if (n && n > 0) saveSettings({ weeklyHours: n }); }

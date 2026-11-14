@@ -85,7 +85,7 @@ function start() {
       email: () => user.email,
       logout: () => signOut(auth).then(() => location.reload()),
       importFile: async file => {
-        const data = JSON.parse(await file.text());
+        const data = JSON.parse((await file.text()).replace(/^\uFEFF/, ""));
         const writes = [];
         for (const col of ["games", "config", "log"]) for (const [id, d] of Object.entries(data[col] || {})) writes.push([col, id, d]);
         if (!writes.length) throw new Error("Archivo vacío");
